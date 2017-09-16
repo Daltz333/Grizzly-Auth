@@ -1,18 +1,19 @@
 import zbar
 
 from PIL import Image
+from datetime import datetime
 import cv2
 import data
 
 
+
 def main():
     capture = cv2.VideoCapture(0)
+    prevID = 0
+
+    date1 = datetime.today().date()
 
     while True:
-        # To quit this program press q.
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
         # Breaks down the video into frames
         ret, frame = capture.read()
 
@@ -30,6 +31,17 @@ def main():
 
         # Prints data from image.
         for decoded in zbar_image:
-            data.login(decoded.data)
+            idnumber = decoded.data
+
+            if (date1 < datetime.today().date()):
+                data.logout()
+
+            if (idnumber != prevID):
+                data.login(idnumber)
+
+            else:
+                pass
+
+            prevID = idnumber
 
 main()
