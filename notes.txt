@@ -1,5 +1,0 @@
-Notes on Authenticating and Collecting User Login and Logout
-Goals:
-1. Lookup User ID in database, grab the current row of User ID, go to the correct column of hours, 
-2. Grab current date, create a new sheet Titles Week of [Grab Current the Monday Date of Week]
-2. 
