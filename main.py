@@ -5,8 +5,6 @@ from datetime import datetime
 import cv2
 import data
 
-
-
 def main():
     capture = cv2.VideoCapture(0)
     prevID = 0
@@ -35,6 +33,9 @@ def main():
 
             if (date1 < datetime.today().date()):
                 data.logout()
+
+            else:
+                pass
 
             if (idnumber != prevID):
                 data.login(idnumber)
