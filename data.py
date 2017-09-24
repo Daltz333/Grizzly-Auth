@@ -32,13 +32,14 @@ def logout():
         # Update in batch
         wks.update_cells(cell_list)
 
-    except gspread.AuthenticationError:
+    except gspread.exceptions.AuthenticationError:
         gc = gspread.authorize(credentials)
         print("Sheet not authorized... Authorized.")
         logout()
 
 #define login method to login people
 def login(idnumber):
+    defaultColumn = 1
     defaultRow = 1
 
     try:
@@ -61,6 +62,30 @@ def login(idnumber):
 
             #update logout time
             wks.update_cell(cell.row, 8, datetime.now().time())
+
+            #log hours and date
+            try:
+                #find idnumber on 2nd sheet, if found then update the date/time
+                cell2 = wks2.find(idnumber)
+                while (wks2.cell(defaultColumn) != ""):
+                    defaultColumn+=1
+
+                cell2_value = datetime.today().date() + " " + datetime.now().time()
+                wks2.update_cell(cell2.row, defaultColumn, cell2_value)
+
+            except gspread.exceptions.CellNotFound:
+                while (wks2.cell(defaultRow) != ""):
+                    defaultColumn+=1
+
+                wks2.update_cell(defaultColumn, 1, idnumber)
+                cell2 = wks2.find(idnumber)
+
+                while (wks2.cell(defaultColumn) != ""):
+                    defaultColumn+=1
+
+                cell2_value = datetime.today().date() + " " + datetime.now().time()
+                wks2.update_cell(cell2.row, defaultColumn, cell2_value)
+
             print(idnumber + " logged out") #logged out
 
         elif(valueOfLoggedIn == "FALSE"):
@@ -74,7 +99,12 @@ def login(idnumber):
             wks.update_cell(cell.row, 8, "logged in")
             print(idnumber + " logged in") #logged in
 
-    except gspread.AuthenticationError:
+        else:
+            pass
+
+    except gspread.exceptions.AuthenticationError:
         gc = gspread.authorize(credentials)
         print("Sheet not authorized... Authorized.")
         return
+
+login(108479)
