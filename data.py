@@ -58,26 +58,28 @@ def login(idnumber):
 
         #BEGIN IF: if logged in, log out. else
         if (valueOfLoggedIn == "TRUE"):
+            today_date = str(datetime.today().date())
+
             #if logged in, logout
             wks.update_cell(cell.row, 11, 'FALSE')
 
             #update logout time
-            wks.update_cell(cell.row, 8, datetime.now().time())
+            wks.update_cell(cell.row, 8, datetime.today().time())
 
             #grab total hours
             totalHours = wks.cell(cell.row, 10).value
 
             #attempt to get date variable
             try:
-                currentdate = wks2.find(datetime.today().date())
+                currentdate = wks2.find(today_date)
             
             #if date not found, create date
             except gspread.exceptions.CellNotFound:
                 while (wks2.cell(1, defaultColumn).value != ""):
                     defaultColumn +=1
 
-                wks2.update_cell(1, defaultColumn, datetime.today().date())
-                currentdate = wks2.find(datetime.today().date())
+                wks2.update_cell(1, defaultColumn, today_date)
+                currentdate = wks2.find(today_date)
 
             #attempt to get id variable on wks2
             try:
