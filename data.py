@@ -42,6 +42,7 @@ def login(idnumber):
     defaultColumn = 1
     defaultRow = 1
 
+#START TRY: except and reauthenticate
     try:
         #START TRY: break if cell is not found
         try:
@@ -63,28 +64,34 @@ def login(idnumber):
             #update logout time
             wks.update_cell(cell.row, 8, datetime.now().time())
 
-            #log hours and date
+            #grab total hours
+            totalHours = wks.cell(cell.row, 10).value
+
+            #attempt to get date variable
             try:
-                #find idnumber on 2nd sheet, if found then update the date/time
-                cell2 = wks2.find(idnumber)
-                while (wks2.cell(defaultColumn) != ""):
-                    defaultColumn+=1
-
-                cell2_value = datetime.today().date() + " " + datetime.now().time()
-                wks2.update_cell(cell2.row, defaultColumn, cell2_value)
-
+                currentdate = wks2.find(datetime.today().date())
+            
+            #if date not found, create date
             except gspread.exceptions.CellNotFound:
-                while (wks2.cell(defaultRow) != ""):
-                    defaultColumn+=1
+                while (wks2.cell(1, defaultColumn).value != ""):
+                    defaultColumn +=1
 
-                wks2.update_cell(defaultColumn, 1, idnumber)
-                cell2 = wks2.find(idnumber)
+                wks2.update_cell(1, defaultColumn, datetime.today().date())
+                currentdate = wks2.find(datetime.today().date())
 
-                while (wks2.cell(defaultColumn) != ""):
-                    defaultColumn+=1
+            #attempt to get id variable on wks2
+            try:
+                wks2_idnumber = wks2.find(idnumber)
 
-                cell2_value = datetime.today().date() + " " + datetime.now().time()
-                wks2.update_cell(cell2.row, defaultColumn, cell2_value)
+            #if idnumber not found, create idnumber
+            except gspread.exceptions.CellNotFound:
+                while (wks2.cell(defaultRow, 1).value != ""):
+                    defaultRow+=1
+
+                wks2.update_cell(defaultRow, 1, idnumber)
+                wks2_idnumber = wks2.find(idnumber)
+
+            wks2.update_cell(wks2_idnumber.row, currentdate.col, totalHours)
 
             print(idnumber + " logged out") #logged out
 
