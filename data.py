@@ -113,5 +113,3 @@ def login(idnumber):
         gc = gspread.authorize(credentials)
         print("Sheet not authorized... Authorized.")
         return
-
-login(108479)
