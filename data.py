@@ -17,8 +17,8 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('GrizzlyAuth-f798
 gc = gspread.authorize(credentials)
 
 #open worksheet
-wks = gc.open('GrizzlyAuth').worksheet('Current')
-wks2 = gc.open('GrizzlyAuth').worksheet('LoggedHours')
+wks = gc.open('GrizzlyTime').worksheet('Current')
+wks2 = gc.open('GrizzlyTime').worksheet('LoggedHours')
 
 print ("Worksheet Authorized")
 
