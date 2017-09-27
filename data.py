@@ -6,6 +6,7 @@ from datetime import datetime
 #logging.basicConfig(level=logging.DEBUG)
 
 #define scope of permissions
+#please note that this scope is not secure
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
 
@@ -24,7 +25,7 @@ print ("Worksheet Authorized")
 #logout at midnight
 def logout():
     try:
-        cell_list = wks.range('11:60')
+        cell_list = wks.range('11:200')
         
         for cell in cell_list:
             cell.value = 'FALSE'
@@ -44,13 +45,26 @@ def login(idnumber):
 
 #START TRY: except and reauthenticate
     try:
-        #START TRY: break if cell is not found
+        #START TRY: create id if non-found
         try:
             cell = wks.find(idnumber)
             print(idnumber + " found")
 
         except gspread.exceptions.CellNotFound:
-            return
+            #create ID if ID matches digit requirement
+            if (len(str(idnumber)) == 6):
+                while(wks.cell(defaultRow, 1).value != ""):
+                    defaultRow+=1
+
+                wks.update_cell(defaultRow, 1, idnumber)
+                wks.update_cell(defaultRow, 11, 'FALSE')
+
+                print("Created Student ID")
+                return
+
+            else:
+                return
+
 
         #END TRY
 
@@ -87,6 +101,7 @@ def login(idnumber):
 
             #if idnumber not found, create idnumber
             except gspread.exceptions.CellNotFound:
+                defaultRow = 1
                 while (wks2.cell(defaultRow, 1).value != ""):
                     defaultRow+=1
 
