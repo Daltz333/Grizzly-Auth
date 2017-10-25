@@ -1,4 +1,7 @@
 # Grizzly-Auth
-A logging system that hooks into google sheets. 
+Simple Logging System that hooks into Google Sheets
+after scanning a QR Code and logs users hours/days logged in. 
 
-***Environent is OpenCV 3.1.0, Python 2.7, zbar0.10.0, imutils, pillow, gspread***
+A logging system that hooks into google sheets.
+
+Environent is OpenCV 3.1.0, Python 2.7, zbar0.10.0, imutils, pillow, gspread
