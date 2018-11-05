@@ -1,5 +1,6 @@
 #CREATED BY DALTON SMITH
-import zbar
+import imutils
+from pyzbar import pyzbar
 import cv2
 import data
 import time
@@ -7,6 +8,7 @@ import time
 from PIL import Image
 from datetime import datetime
 from imutils.video import WebcamVideoStream
+from imutils.video import VideoStream
 
 def main():
     #note: multithreading is untested, if code no work, replace
@@ -31,22 +33,17 @@ def main():
 
         # Breaks down the video into frames
         frame = capture.read()
+        frame = imutils.resize(frame, width=400)
 
-        # Converts image to grayscale.
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        # Uses PIL to convert the grayscale image into a ndary array that ZBar can understand.
-        image = Image.fromarray(gray)
-        width, height = image.size
-        zbar_image = zbar.Image(width, height, 'Y800', image.tobytes())
-
-        # Scans the zbar image.
-        scanner = zbar.ImageScanner()
-        scanner.scan(zbar_image)
+        barcodes = pyzbar.decode(frame)
 
         # Prints data from image.
-        for decoded in zbar_image:
-            idnumber = decoded.data
+        for decoded in barcodes:
+            idnumber = decoded.data.decode("utf-8")
+            print(idnumber)
+
+            (x, y, w, h) = decoded.rect
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
             #if idnumber is not prevID, login
             if (idnumber != prevID):
@@ -67,8 +64,6 @@ def main():
 
         frame = cv2.flip(frame, 1)
         cv2.namedWindow('image',cv2.WINDOW_NORMAL)
-        cv2.resizeWindow('image', 500, 390)
-        cv2.rectangle(frame,(175,150),(450,350),(255,0,0),3)
         cv2.imshow('image', frame)
         if cv2.waitKey(1) == 27: 
             break # esc to quit

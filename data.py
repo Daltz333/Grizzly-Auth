@@ -11,7 +11,7 @@ scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
 
 #access credential data
-credentials = ServiceAccountCredentials.from_json_keyfile_name('GrizzlyAuth-26da35369065.json', scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('GrizzlyAuth.json', scope)
 
 #authorize using credentials
 gc = gspread.authorize(credentials)
@@ -20,7 +20,7 @@ gc = gspread.authorize(credentials)
 wks = gc.open('GrizzlyTime').worksheet('Current')
 wks2 = gc.open('GrizzlyTime').worksheet('LoggedHours')
 
-print ("Worksheet Authorized")
+print("Worksheet Authorized")
 
 #logout at midnight
 def logout():
@@ -78,7 +78,7 @@ def login(idnumber):
             wks.update_cell(cell.row, 11, 'FALSE')
 
             #update logout time
-            wks.update_cell(cell.row, 8, datetime.today().time())
+            wks.update_cell(cell.row, 8, str(datetime.now().time()))
 
             #grab total hours
             totalHours = wks.cell(cell.row, 10).value
@@ -117,7 +117,7 @@ def login(idnumber):
             wks.update_cell(cell.row, 11, 'TRUE')
 
             #update login time
-            wks.update_cell(cell.row, 7, datetime.now().time())
+            wks.update_cell(cell.row, 7, str(datetime.now().time()))
 
             #blank out logout time
             wks.update_cell(cell.row, 8, "logged in")
@@ -126,7 +126,7 @@ def login(idnumber):
         else:
             pass
 
-    except gspread.exceptions.AuthenticationError:
-        gc = gspread.authorize(credentials)
+    except gspread.exceptions.APIError:
+        gspread.authorize(credentials)
         print("Sheet not authorized... Authorized.")
         return
