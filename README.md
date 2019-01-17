@@ -1,5 +1,5 @@
 # Grizzly-Time
-SEMI-MAINTAINED  
+No longer maintained, updated version at https://github.com/Daltz333/GrizzlyTime-JavaFX  
 Simple Logging System that hooks into Google Sheets
 after scanning a QR Code and logs users hours/days logged in. 
 
